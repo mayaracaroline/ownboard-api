@@ -62,5 +62,5 @@ func (h *personHandler) DeletePerson(w http.ResponseWriter, r *http.Request) {
 func (h *personHandler) DeletePersonByDocument(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Delete person by document: /person")
 	params := mux.Vars(r)
-	h.service.DeletePersonById(params["document"])
+	h.service.DeletePersonByDocument(params["document"])
 }
