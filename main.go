@@ -17,11 +17,12 @@ func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/", GetPersons).Methods("GET")
-	router.HandleFunc("/person", GetPersons).Methods("GET")
+	router.HandleFunc("/persons", GetPersons).Methods("GET")
 	router.HandleFunc("/person/{document}", GetPersonByDocument).Methods("GET")
 	router.HandleFunc("/person", CreatePerson).Methods("POST")
-	router.HandleFunc("/person", UpdatePerson).Methods("PUT")
-	router.HandleFunc("/person/{document}", DeletePerson).Methods("DELETE")
+	router.HandleFunc("/person/{document}", UpdatePerson).Methods("PUT")
+	router.HandleFunc("/person/{document}", DeletePersonByDocument).Methods("DELETE")
+	router.HandleFunc("/persons", DeletePerson).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":10000", router))
 }
@@ -45,6 +46,6 @@ func DeletePerson(w http.ResponseWriter, r *http.Request) {
 	_handler.DeletePerson(w, r)
 }
 
-func DeletePersonById(w http.ResponseWriter, r *http.Request) {
-	_handler.DeletePersonById(w, r)
+func DeletePersonByDocument(w http.ResponseWriter, r *http.Request) {
+	_handler.DeletePersonByDocument(w, r)
 }
