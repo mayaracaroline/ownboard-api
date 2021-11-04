@@ -11,6 +11,6 @@ type Service interface {
 	GetPersonByDocument(document string) model.Person
 	CreatePerson(r *http.Request) string
 	UpdatePerson(r *http.Request) string
-	DeletePersonById(r *http.Request)
-	DeleteAllPersons(r *http.Request)
+	DeletePersonByDocument(documento string)
+	DeleteAllPersons()
 }

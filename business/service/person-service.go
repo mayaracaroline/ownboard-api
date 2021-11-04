@@ -51,23 +51,16 @@ func (s *personService) UpdatePerson(r *http.Request) string {
 	return "Dados atualizados com sucesso"
 }
 
-func (s *personService) DeletePersonById(r *http.Request) {
-	var person model.Person
-	json.NewDecoder(r.Body).Decode(&person)
-	s.repository.DeleteById(person.Document)
+func (s *personService) DeletePersonByDocument(document string) {
+	s.repository.DeleteByDocument(document)
 }
 
-func (s *personService) DeleteAllPersons(r *http.Request) {
-	var person model.Person
-	json.NewDecoder(r.Body).Decode(&person)
+func (s *personService) DeleteAllPersons() {
 	s.repository.DeleteAll()
 }
 
 func toPerson(r *http.Request) model.Person {
 	var person model.Person
 	json.NewDecoder(r.Body).Decode(&person)
-
 	return person
 }
-
-// interface service com comportamentos e uma estrutura que implemente os comportamentos e um atributo repositorio
