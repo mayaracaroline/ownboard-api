@@ -8,6 +8,6 @@ type Repository interface {
 	FindAll() []model.Person
 	FindById(id string) model.Person
 	CheckForExistingPerson(id string) bool
-	DeleteById(id string)
+	DeleteByDocument(id string)
 	DeleteAll()
 }

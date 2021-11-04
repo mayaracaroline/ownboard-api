@@ -29,7 +29,6 @@ func (r *personRepository) FindAll() []model.Person {
 }
 
 func (r *personRepository) Update(p model.Person) {
-
 	r.db[p.Document] = p
 }
 
@@ -37,7 +36,7 @@ func (r *personRepository) FindById(id string) model.Person {
 	return r.db[id]
 }
 
-func (r *personRepository) DeleteById(id string) {
+func (r *personRepository) DeleteByDocument(id string) {
 	delete(r.db, id)
 }
 
