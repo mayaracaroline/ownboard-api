@@ -5,12 +5,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/mercadolibre/api/business/service"
 	"github.com/mercadolibre/api/handler"
 )
 
 var _handler = handler.NewPersonHandle()
-var _service = service.NewPersonService()
 
 func main() {
 

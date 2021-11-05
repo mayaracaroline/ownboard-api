@@ -12,9 +12,7 @@ type personService struct {
 	repository repositories.Repository
 }
 
-func NewPersonService() Service {
-	r := repositories.NewPersonRepository()
-
+func NewPersonService(r repositories.Repository) Service {
 	return &personService{
 		repository: r,
 	}

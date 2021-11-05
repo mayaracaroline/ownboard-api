@@ -7,6 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mercadolibre/api/business/service"
+	"github.com/mercadolibre/api/repositories"
 )
 
 type (
@@ -19,14 +20,17 @@ type (
 		DeletePersonByDocument(w http.ResponseWriter, r *http.Request)
 	}
 	personHandler struct {
-		service service.Service
+		service    service.Service
+		repository repositories.Repository
 	}
 )
 
 func NewPersonHandle() Handler {
-	s := service.NewPersonService()
+	r := repositories.NewPersonRepository()
+	s := service.NewPersonService(r)
 	return &personHandler{
-		service: s,
+		service:    s,
+		repository: r,
 	}
 }
 
