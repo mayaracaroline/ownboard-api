@@ -43,7 +43,11 @@ func (r *personRepository) DeleteByDocument(id string) {
 func (r *personRepository) CheckForExistingPerson(id string) bool {
 	person := r.db[id]
 
-	return person != (model.Person{})
+	if (person != model.Person{}) {
+		return true
+	}
+
+	return false
 }
 
 func (r *personRepository) DeleteAll() {
