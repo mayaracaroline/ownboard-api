@@ -28,28 +28,32 @@ func (r *personRepository) FindAll() []model.Person {
 	return _persons
 }
 
-func (r *personRepository) Update(p model.Person) {
-	r.db[p.Document] = p
+func (r *personRepository) Update(p model.Person) bool {
+	existsPerson := r.checkForExistingPerson(p.Document)
+
+	if existsPerson {
+		r.db[p.Document] = p
+	}
+	return existsPerson
 }
 
-func (r *personRepository) FindById(id string) model.Person {
-	return r.db[id]
+func (r *personRepository) FindByDocument(id string) (bool, model.Person) {
+
+	person, ok := r.db[id]
+
+	return ok, person
 }
 
 func (r *personRepository) DeleteByDocument(id string) {
 	delete(r.db, id)
 }
 
-func (r *personRepository) CheckForExistingPerson(id string) bool {
-	person := r.db[id]
-
-	if (person != model.Person{}) {
-		return true
-	}
-
-	return false
-}
-
 func (r *personRepository) DeleteAll() {
 	r.db = make(map[string]model.Person)
+}
+
+func (r *personRepository) checkForExistingPerson(id string) bool {
+	_, ok := r.db[id]
+
+	return ok
 }

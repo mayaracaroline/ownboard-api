@@ -7,7 +7,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mercadolibre/api/business/service"
-	"github.com/mercadolibre/api/repositories"
 )
 
 type (
@@ -20,42 +19,67 @@ type (
 		DeletePersonByDocument(w http.ResponseWriter, r *http.Request)
 	}
 	personHandler struct {
-		service    service.Service
-		repository repositories.Repository
+		service service.Service
 	}
 )
 
-func NewPersonHandle() Handler {
-	r := repositories.NewPersonRepository()
-	s := service.NewPersonService(r)
+func NewPersonHandle(s service.Service) Handler {
 	return &personHandler{
-		service:    s,
-		repository: r,
+		service: s,
 	}
 }
 
 func (h *personHandler) GetPersonByDocument(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Get person by document: /person/{document}")
 	params := mux.Vars(r)
-	person := h.service.GetPersonByDocument(params["document"])
-	json.NewEncoder(w).Encode(&person)
+	person, message := h.service.GetPersonByDocument(params["document"])
+	var err error
+
+	if message != "" {
+		err = json.NewEncoder(w).Encode(&message)
+	} else {
+		err = json.NewEncoder(w).Encode(&person)
+	}
+
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+	}
 }
+
 func (h *personHandler) GetPersons(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Get person: /person/{document}")
 	persons := h.service.GetPersons()
-	json.NewEncoder(w).Encode(&persons)
+	err := json.NewEncoder(w).Encode(&persons)
+
+	if err != nil {
+		fmt.Println("Erro ao buscar dados em service.GetPersons ", err.Error())
+		http.Error(w, "erro ao buscar pessoa: "+err.Error(), 500)
+
+	}
 }
 
 func (h *personHandler) CreatePerson(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Create person: /person")
+
 	message := h.service.CreatePerson(r)
-	json.NewEncoder(w).Encode(&message)
+	err := json.NewEncoder(w).Encode(&message)
+
+	if err != nil {
+		fmt.Println("Erro ao processar dados service.CreatePerson", err.Error())
+		http.Error(w, err.Error(), 500)
+	}
+
 }
 
 func (h *personHandler) UpdatePerson(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Update person: /person")
 	message := h.service.UpdatePerson(r)
-	json.NewEncoder(w).Encode(&message)
+	err := json.NewEncoder(w).Encode(&message)
+
+	if err != nil {
+		fmt.Println("Erro ao processar dados service.UpdatePerson", err.Error())
+		http.Error(w, err.Error(), 500)
+	}
 }
 
 func (h *personHandler) DeletePerson(w http.ResponseWriter, r *http.Request) {

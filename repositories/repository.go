@@ -4,10 +4,10 @@ import "github.com/mercadolibre/api/business/model"
 
 type Repository interface {
 	Save(person model.Person)
-	Update(person model.Person)
+	Update(person model.Person) bool
 	FindAll() []model.Person
-	FindById(id string) model.Person
-	CheckForExistingPerson(id string) bool
+	FindByDocument(id string) (bool, model.Person)
+	checkForExistingPerson(id string) bool
 	DeleteByDocument(id string)
 	DeleteAll()
 }

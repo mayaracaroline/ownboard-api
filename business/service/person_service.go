@@ -22,8 +22,14 @@ func (s *personService) GetPersons() []model.Person {
 	return s.repository.FindAll()
 }
 
-func (s *personService) GetPersonByDocument(document string) model.Person {
-	return s.repository.FindById(document)
+func (s *personService) GetPersonByDocument(document string) (model.Person, string) {
+
+	existsPerson, person := s.repository.FindByDocument(document)
+	if !existsPerson {
+		return person, "Pessoa não encontrada para o documento: " + document
+	}
+
+	return person, ""
 }
 
 func (s *personService) CreatePerson(r *http.Request) string {
@@ -33,26 +39,28 @@ func (s *personService) CreatePerson(r *http.Request) string {
 		return err.Error()
 	}
 
-	if s.repository.FindById(person.Document) != (model.Person{}) {
-		return "Usuário já cadastrado!"
+	existsPerson, _ := s.repository.FindByDocument(person.Document)
+
+	if existsPerson {
+		return "Pessoa já cadastrada!"
 	}
 
 	s.repository.Save(person)
 
-	return "Usuário cadastrado com sucesso!"
+	return "Pessoa cadastrada com sucesso!"
 }
 
 func (s *personService) UpdatePerson(r *http.Request) string {
 	person, err := toPerson(r)
-	existsPerson := s.repository.CheckForExistingPerson(person.Document)
 	if err != nil {
 		return err.Error()
 	}
-	if !existsPerson {
-		return "Usuário não encontrado para atualização"
+	updated := s.repository.Update(person)
+
+	if !updated {
+		return "Pessoa não encontrada para atualização"
 	}
 
-	s.repository.Update(person)
 	return "Dados atualizados com sucesso"
 }
 

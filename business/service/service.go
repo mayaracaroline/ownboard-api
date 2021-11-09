@@ -8,7 +8,7 @@ import (
 
 type Service interface {
 	GetPersons() []model.Person
-	GetPersonByDocument(document string) model.Person
+	GetPersonByDocument(document string) (model.Person, string)
 	CreatePerson(r *http.Request) string
 	UpdatePerson(r *http.Request) string
 	DeletePersonByDocument(documento string)
