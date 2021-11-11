@@ -24,9 +24,9 @@ func (s *personService) GetPersons() []model.Person {
 
 func (s *personService) GetPersonByDocument(document string) (model.Person, string) {
 
-	existsPerson, person := s.repository.FindByDocument(document)
-	if !existsPerson {
-		return person, "Pessoa não encontrada para o documento: " + document
+	person, findErr := s.repository.FindByDocument(document)
+	if findErr != nil {
+		return person, findErr.Error()
 	}
 
 	return person, ""
@@ -39,9 +39,9 @@ func (s *personService) CreatePerson(r *http.Request) string {
 		return err.Error()
 	}
 
-	existsPerson, _ := s.repository.FindByDocument(person.Document)
+	_, findErr := s.repository.FindByDocument(person.Document)
 
-	if existsPerson {
+	if findErr != nil {
 		return "Pessoa já cadastrada!"
 	}
 
@@ -55,10 +55,10 @@ func (s *personService) UpdatePerson(r *http.Request) string {
 	if err != nil {
 		return err.Error()
 	}
-	updated := s.repository.Update(person)
+	updateError := s.repository.Update(person)
 
-	if !updated {
-		return "Pessoa não encontrada para atualização"
+	if updateError != nil {
+		return updateError.Error()
 	}
 
 	return "Dados atualizados com sucesso"

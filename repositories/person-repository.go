@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"errors"
+
 	"github.com/mercadolibre/api/business/model"
 )
 
@@ -12,6 +14,12 @@ func NewPersonRepository() Repository {
 	p := make(map[string]model.Person)
 	return &personRepository{
 		db: p,
+	}
+}
+
+func NewPersonRepositoryDb(db map[string]model.Person) Repository {
+	return &personRepository{
+		db: db,
 	}
 }
 
@@ -28,20 +36,26 @@ func (r *personRepository) FindAll() []model.Person {
 	return _persons
 }
 
-func (r *personRepository) Update(p model.Person) bool {
+func (r *personRepository) Update(p model.Person) error {
 	existsPerson := r.checkForExistingPerson(p.Document)
 
-	if existsPerson {
-		r.db[p.Document] = p
+	if !existsPerson {
+		return errors.New("Pessoa não encontrada para atualização")
 	}
-	return existsPerson
+
+	r.db[p.Document] = p
+
+	return nil
 }
 
-func (r *personRepository) FindByDocument(id string) (bool, model.Person) {
+func (r *personRepository) FindByDocument(document string) (model.Person, error) {
 
-	person, ok := r.db[id]
+	person, ok := r.db[document]
 
-	return ok, person
+	if !ok {
+		return model.Person{}, errors.New("Pessoa não encontrada para o documento: " + document)
+	}
+	return person, nil
 }
 
 func (r *personRepository) DeleteByDocument(id string) {
