@@ -41,7 +41,7 @@ func (s *personService) CreatePerson(r *http.Request) string {
 
 	_, findErr := s.repository.FindByDocument(person.Document)
 
-	if findErr != nil {
+	if findErr == nil {
 		return "Pessoa já cadastrada!"
 	}
 
