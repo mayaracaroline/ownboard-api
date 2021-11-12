@@ -14,27 +14,13 @@ type PersonRepositoryMock struct {
 	mock.Mock
 }
 
-func (p *PersonMock) NewPersonMock() model.Person {
-	return model.Person{
+func (p *PersonMock) NewPersonMock() *model.Person {
+	return &model.Person{
 		Name:       "Mayara",
 		LastName:   "Santos",
 		DateOfBorn: time.Date(1994, 04, 20, 18, 0, 0, 0, time.UTC),
 		Type:       "Fisica",
 		Document:   "44221617845",
-	}
-}
-
-func (r *PersonRepositoryMock) NewPerson(name string,
-	lastName string,
-	dateOfBorn time.Time,
-	document string,
-	t string) *model.Entity {
-	return &r{
-		Name:       name,
-		LastName:   lastName,
-		DateOfBorn: dateOfBorn,
-		Type:       t,
-		Document:   document,
 	}
 }
 
@@ -58,6 +44,7 @@ func (r *PersonRepositoryMock) checkForExistingPerson(id string) bool {
 	args := r.Called(id)
 	return args.Bool(0)
 }
+
 func (r *PersonRepositoryMock) DeleteByDocument(id string) {
 	r.Called(id)
 }
