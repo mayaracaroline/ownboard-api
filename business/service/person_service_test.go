@@ -1,4 +1,4 @@
-package tests
+package service_test
 
 import (
 	"bytes"
@@ -89,7 +89,7 @@ func TestCreatePersonError(t *testing.T) {
 func TestUpdatePerson(t *testing.T) {
 	person := *model.NewPerson(
 		"Mayara",
-		"Santos",
+		"de Paula",
 		time.Date(1994, 04, 20, 18, 0, 0, 0, time.UTC),
 		_registeredDocument,
 		"Fisica",

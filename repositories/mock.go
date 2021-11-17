@@ -1,27 +1,12 @@
-package tests
+package repositories
 
 import (
-	"time"
-
 	"github.com/mercadolibre/api/business/model"
 	"github.com/stretchr/testify/mock"
 )
 
-type PersonMock struct {
-	mock.Mock
-}
 type PersonRepositoryMock struct {
 	mock.Mock
-}
-
-func (p *PersonMock) NewPersonMock() *model.Person {
-	return &model.Person{
-		Name:       "Mayara",
-		LastName:   "Santos",
-		DateOfBorn: time.Date(1994, 04, 20, 18, 0, 0, 0, time.UTC),
-		Type:       "Fisica",
-		Document:   "44221617845",
-	}
 }
 
 func (r *PersonRepositoryMock) Save(person model.Person) {}

@@ -1,4 +1,4 @@
-package tests
+package repositories_test
 
 import (
 	"testing"
@@ -16,7 +16,7 @@ func init() {
 }
 
 func TestFindPersonByDocument(t *testing.T) {
-	personMock := &PersonMock{}
+	personMock := &model.PersonMock{}
 
 	person, err := repo.FindByDocument("44221617845")
 
@@ -26,7 +26,7 @@ func TestFindPersonByDocument(t *testing.T) {
 }
 
 func TestFindPersonByDocumentError(t *testing.T) {
-	personMock := &PersonMock{}
+	personMock := &model.PersonMock{}
 
 	person, err := repo.FindByDocument("44221617840")
 
