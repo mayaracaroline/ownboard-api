@@ -16,21 +16,19 @@ func init() {
 }
 
 func TestFindPersonByDocument(t *testing.T) {
-	personMock := &model.PersonMock{}
-
 	person, err := repo.FindByDocument("44221617845")
 
-	assert.Equal(t, personMock.NewPersonMock(), person)
+	assert.Equal(t, *model.NewPerson("Mayara", "Santos", time.Date(1994, 04, 20, 18, 0, 0, 0, time.UTC), "44221617845", "Fisica"), person)
 	assert.NotEmpty(t, person)
 	assert.NoError(t, err)
 }
 
 func TestFindPersonByDocumentError(t *testing.T) {
-	personMock := &model.PersonMock{}
+	p := *model.NewPerson("Mayara", "Santos", time.Date(1994, 04, 20, 18, 0, 0, 0, time.UTC), "44221617845", "Fisica")
 
 	person, err := repo.FindByDocument("44221617840")
 
-	assert.NotEqual(t, personMock.NewPersonMock(), person)
+	assert.NotEqual(t, p, person)
 	assert.Empty(t, person)
 	assert.Error(t, err)
 }

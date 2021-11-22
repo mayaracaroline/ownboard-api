@@ -9,25 +9,22 @@ type PersonRepositoryMock struct {
 	mock.Mock
 }
 
-func (r *PersonRepositoryMock) Save(person model.Person) {}
+func (r *PersonRepositoryMock) Save(person model.Person) {
+	r.Called(person)
+}
 
-func (r *PersonRepositoryMock) Update(person model.Person) bool {
+func (r *PersonRepositoryMock) Update(person model.Person) error {
 	args := r.Called(person)
-	return args.Bool(0)
+	return args.Error(0)
 }
 
 func (r *PersonRepositoryMock) FindAll() []model.Person {
 	args := r.Called()
 	return args.Get(0).([]model.Person)
 }
-func (r *PersonRepositoryMock) FindByDocument(id string) (bool, model.Person) {
+func (r *PersonRepositoryMock) FindByDocument(id string) (model.Person, error) {
 	args := r.Called(id)
-	return args.Bool(0), args.Get(1).(model.Person)
-}
-
-func (r *PersonRepositoryMock) checkForExistingPerson(id string) bool {
-	args := r.Called(id)
-	return args.Bool(0)
+	return args.Get(0).(model.Person), args.Error(1)
 }
 
 func (r *PersonRepositoryMock) DeleteByDocument(id string) {

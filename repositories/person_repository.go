@@ -17,12 +17,6 @@ func NewPersonRepository() Repository {
 	}
 }
 
-func NewPersonRepositoryDb(db map[string]model.Person) Repository {
-	return &personRepository{
-		db: db,
-	}
-}
-
 func (r *personRepository) Save(p model.Person) {
 	r.db[p.Document] = p
 }

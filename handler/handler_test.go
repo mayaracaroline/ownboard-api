@@ -1,15 +1,18 @@
 package handler_test
 
 import (
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/gorilla/mux"
+	"github.com/mercadolibre/api/business/model"
 	"github.com/mercadolibre/api/business/service"
 	"github.com/mercadolibre/api/handler"
 	"github.com/mercadolibre/api/repositories"
 	"github.com/steinfletcher/apitest"
+	"github.com/stretchr/testify/mock"
 )
 
 type HTTPClient interface {
@@ -25,9 +28,10 @@ func init() {
 }
 func TestGetPersonByDocument(t *testing.T) {
 
-	repo := repositories.NewPersonRepository()
-	s := service.NewPersonService(repo)
+	repositoryMock := repositories.PersonRepositoryMock{}
+	s := service.NewPersonService(&repositoryMock)
 	handler := handler.NewPersonHandle(s)
+	repositoryMock.On("FindByDocument", mock.AnythingOfType("string")).Return(model.Person{}, errors.New(""))
 
 	r := mux.NewRouter()
 	r.HandleFunc("/person/{document}", handler.GetPersonByDocument)
@@ -43,9 +47,10 @@ func TestGetPersonByDocument(t *testing.T) {
 
 func TestGetPersons(t *testing.T) {
 
-	repo := repositories.NewPersonRepository()
-	s := service.NewPersonService(repo)
+	repositoryMock := repositories.PersonRepositoryMock{}
+	s := service.NewPersonService(&repositoryMock)
 	handler := handler.NewPersonHandle(s)
+	repositoryMock.On("FindAll", mock.AnythingOfType("string")).Return([]model.Person{}, errors.New(""))
 
 	r := mux.NewRouter()
 	r.HandleFunc("/persons", handler.GetPersons)
@@ -61,9 +66,10 @@ func TestGetPersons(t *testing.T) {
 
 func TestCreatePerson(t *testing.T) {
 
-	repo := repositories.NewPersonRepository()
-	s := service.NewPersonService(repo)
+	repositoryMock := repositories.PersonRepositoryMock{}
+	s := service.NewPersonService(&repositoryMock)
 	handler := handler.NewPersonHandle(s)
+	repositoryMock.On("FindByDocument", mock.AnythingOfType("string")).Return(model.Person{}, errors.New(""))
 
 	r := mux.NewRouter()
 	r.HandleFunc("/person", handler.CreatePerson)
@@ -79,8 +85,8 @@ func TestCreatePerson(t *testing.T) {
 
 func TestUpdatePerson(t *testing.T) {
 
-	repo := repositories.NewPersonRepository()
-	s := service.NewPersonService(repo)
+	repositoryMock := repositories.PersonRepositoryMock{}
+	s := service.NewPersonService(&repositoryMock)
 	handler := handler.NewPersonHandle(s)
 
 	r := mux.NewRouter()
@@ -97,8 +103,8 @@ func TestUpdatePerson(t *testing.T) {
 
 func TestDeletePersonByDocument(t *testing.T) {
 
-	repo := repositories.NewPersonRepository()
-	s := service.NewPersonService(repo)
+	repositoryMock := repositories.PersonRepositoryMock{}
+	s := service.NewPersonService(&repositoryMock)
 	handler := handler.NewPersonHandle(s)
 
 	r := mux.NewRouter()
@@ -115,8 +121,8 @@ func TestDeletePersonByDocument(t *testing.T) {
 
 func TestDeletePerson(t *testing.T) {
 
-	repo := repositories.NewPersonRepository()
-	s := service.NewPersonService(repo)
+	repositoryMock := repositories.PersonRepositoryMock{}
+	s := service.NewPersonService(&repositoryMock)
 	handler := handler.NewPersonHandle(s)
 
 	r := mux.NewRouter()

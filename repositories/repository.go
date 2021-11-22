@@ -7,7 +7,6 @@ type Repository interface {
 	Update(person model.Person) error
 	FindAll() []model.Person
 	FindByDocument(id string) (model.Person, error)
-	checkForExistingPerson(id string) bool
 	DeleteByDocument(id string)
 	DeleteAll()
 }
