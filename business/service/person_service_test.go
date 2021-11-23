@@ -114,6 +114,18 @@ func TestCreatePersonError(t *testing.T) {
 	assert.Equal(t, "Pessoa já cadastrada!", message)
 }
 
+func TestCreatePersonRequestError(t *testing.T) {
+	repositoryMock := repositories.PersonRepositoryMock{}
+	s := service.NewPersonService(&repositoryMock)
+
+	repositoryMock.On("FindByDocument", mock.AnythingOfType("string")).Return(model.Person{}, nil)
+	request, err := createRequestError()
+	message := s.CreatePerson(request)
+
+	assert.NoError(t, err)
+	assert.Equal(t, "erro ao processar dados, revise os campos inseridos", message)
+}
+
 func TestUpdatePerson(t *testing.T) {
 	repositoryMock := repositories.PersonRepositoryMock{}
 	s := service.NewPersonService(&repositoryMock)
@@ -177,6 +189,18 @@ func TestUpdatePersonError(t *testing.T) {
 	assert.Equal(t, "Pessoa não encontrada para atualização", message)
 }
 
+func TestUpdatePersonRequestError(t *testing.T) {
+	repositoryMock := repositories.PersonRepositoryMock{}
+	s := service.NewPersonService(&repositoryMock)
+
+	request, err := createRequestError()
+	message := s.UpdatePerson(request)
+
+	assert.NoError(t, err)
+	assert.Equal(t, "erro ao processar dados, revise os campos inseridos", message)
+
+}
+
 func TestDeletePersonByDocument(t *testing.T) {
 	repositoryMock := repositories.PersonRepositoryMock{}
 	repositoryMock.On("DeleteByDocument", mock.AnythingOfType("string")).Return()
@@ -222,5 +246,10 @@ func TestDeleteAllPerson(t *testing.T) {
 func createRequest(p model.Person) (*http.Request, error) {
 	jsonBytes, _ := json.Marshal(p)
 	request, err := http.NewRequest(http.MethodPost, "/", bytes.NewReader(jsonBytes))
+	return request, err
+}
+
+func createRequestError() (*http.Request, error) {
+	request, err := http.NewRequest(http.MethodPost, "/", bytes.NewBufferString("{ name:}"))
 	return request, err
 }
