@@ -11,6 +11,6 @@ type Service interface {
 	GetPersonByDocument(document string) (model.Person, error)
 	CreatePerson(r *http.Request) error
 	UpdatePerson(r *http.Request) error
-	DeletePersonByDocument(documento string)
+	DeletePersonByDocument(document string)
 	DeleteAllPersons()
 }
