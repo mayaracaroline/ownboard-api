@@ -10,28 +10,33 @@ import (
 	"github.com/mercadolibre/api/business/model"
 	"github.com/mercadolibre/api/business/service"
 	"github.com/mercadolibre/api/handler"
-	"github.com/mercadolibre/api/repositories"
 	"github.com/steinfletcher/apitest"
 	"github.com/stretchr/testify/mock"
 )
 
-type HTTPClient interface {
-	Do(req *http.Request) (*http.Response, error)
+func TestGetPersonByDocumentError(t *testing.T) {
+
+	s := service.PersonServiceMock{}
+	handler := handler.NewPersonHandle(&s)
+	s.On("GetPersonByDocument", mock.AnythingOfType("string")).Return(model.Person{}, errors.New(""))
+
+	r := mux.NewRouter()
+	r.HandleFunc("/person/{document}", handler.GetPersonByDocument)
+	ts := httptest.NewServer(r)
+	defer ts.Close()
+	apitest.New().
+		Handler(r).
+		Get("/person/01234567890").
+		Expect(t).
+		Status(http.StatusOK).
+		End()
 }
 
-var (
-	Client HTTPClient
-)
-
-func init() {
-	Client = &http.Client{}
-}
 func TestGetPersonByDocument(t *testing.T) {
 
-	repositoryMock := repositories.PersonRepositoryMock{}
-	s := service.NewPersonService(&repositoryMock)
-	handler := handler.NewPersonHandle(s)
-	repositoryMock.On("FindByDocument", mock.AnythingOfType("string")).Return(model.Person{}, errors.New(""))
+	s := service.PersonServiceMock{}
+	handler := handler.NewPersonHandle(&s)
+	s.On("GetPersonByDocument", mock.AnythingOfType("string")).Return(model.Person{}, nil)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/person/{document}", handler.GetPersonByDocument)
@@ -47,10 +52,9 @@ func TestGetPersonByDocument(t *testing.T) {
 
 func TestGetPersons(t *testing.T) {
 
-	repositoryMock := repositories.PersonRepositoryMock{}
-	s := service.NewPersonService(&repositoryMock)
-	handler := handler.NewPersonHandle(s)
-	repositoryMock.On("FindAll", mock.AnythingOfType("string")).Return([]model.Person{}, errors.New(""))
+	s := service.PersonServiceMock{}
+	handler := handler.NewPersonHandle(&s)
+	s.On("GetPersons").Return([]model.Person{})
 
 	r := mux.NewRouter()
 	r.HandleFunc("/persons", handler.GetPersons)
@@ -66,10 +70,27 @@ func TestGetPersons(t *testing.T) {
 
 func TestCreatePerson(t *testing.T) {
 
-	repositoryMock := repositories.PersonRepositoryMock{}
-	s := service.NewPersonService(&repositoryMock)
-	handler := handler.NewPersonHandle(s)
-	repositoryMock.On("FindByDocument", mock.AnythingOfType("string")).Return(model.Person{}, errors.New(""))
+	s := service.PersonServiceMock{}
+	handler := handler.NewPersonHandle(&s)
+	s.On("CreatePerson", mock.AnythingOfType("*http.Request")).Return(nil)
+
+	r := mux.NewRouter()
+	r.HandleFunc("/person", handler.CreatePerson)
+	ts := httptest.NewServer(r)
+	defer ts.Close()
+	apitest.New().
+		Handler(r).
+		Post("/person").
+		Expect(t).
+		Status(http.StatusOK).
+		End()
+}
+
+func TestCreatePersonError(t *testing.T) {
+
+	s := service.PersonServiceMock{}
+	handler := handler.NewPersonHandle(&s)
+	s.On("CreatePerson", mock.AnythingOfType("*http.Request")).Return(errors.New(""))
 
 	r := mux.NewRouter()
 	r.HandleFunc("/person", handler.CreatePerson)
@@ -85,12 +106,12 @@ func TestCreatePerson(t *testing.T) {
 
 func TestUpdatePerson(t *testing.T) {
 
-	repositoryMock := repositories.PersonRepositoryMock{}
-	s := service.NewPersonService(&repositoryMock)
-	handler := handler.NewPersonHandle(s)
+	s := service.PersonServiceMock{}
+	handler := handler.NewPersonHandle(&s)
+	s.On("UpdatePerson", mock.AnythingOfType("*http.Request")).Return(nil)
 
 	r := mux.NewRouter()
-	r.HandleFunc("/person", handler.CreatePerson)
+	r.HandleFunc("/person", handler.UpdatePerson)
 	ts := httptest.NewServer(r)
 	defer ts.Close()
 	apitest.New().
@@ -103,12 +124,12 @@ func TestUpdatePerson(t *testing.T) {
 
 func TestDeletePersonByDocument(t *testing.T) {
 
-	repositoryMock := repositories.PersonRepositoryMock{}
-	s := service.NewPersonService(&repositoryMock)
-	handler := handler.NewPersonHandle(s)
+	s := service.PersonServiceMock{}
+	handler := handler.NewPersonHandle(&s)
+	s.On("DeletePersonByDocument", mock.AnythingOfType("string"))
 
 	r := mux.NewRouter()
-	r.HandleFunc("/person/{document}", handler.CreatePerson)
+	r.HandleFunc("/person/{document}", handler.DeletePersonByDocument)
 	ts := httptest.NewServer(r)
 	defer ts.Close()
 	apitest.New().
@@ -121,12 +142,12 @@ func TestDeletePersonByDocument(t *testing.T) {
 
 func TestDeletePerson(t *testing.T) {
 
-	repositoryMock := repositories.PersonRepositoryMock{}
-	s := service.NewPersonService(&repositoryMock)
-	handler := handler.NewPersonHandle(s)
+	s := service.PersonServiceMock{}
+	handler := handler.NewPersonHandle(&s)
+	s.On("DeleteAllPersons")
 
 	r := mux.NewRouter()
-	r.HandleFunc("/person", handler.CreatePerson)
+	r.HandleFunc("/person", handler.DeletePerson)
 	ts := httptest.NewServer(r)
 	defer ts.Close()
 	apitest.New().

@@ -29,13 +29,13 @@ func NewPersonHandle(s service.Service) Handler {
 	}
 }
 
-func (h *personHandler) GetPersonByDocument(w http.ResponseWriter, r *http.Request) {
+func (h personHandler) GetPersonByDocument(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Get person by document: /person/{document}")
 	params := mux.Vars(r)
 	person, message := h.service.GetPersonByDocument(params["document"])
 	var err error
 
-	if message != "" {
+	if message != nil {
 		err = json.NewEncoder(w).Encode(&message)
 	} else {
 		err = json.NewEncoder(w).Encode(&person)
@@ -46,7 +46,7 @@ func (h *personHandler) GetPersonByDocument(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-func (h *personHandler) GetPersons(w http.ResponseWriter, r *http.Request) {
+func (h personHandler) GetPersons(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Get person: /person/{document}")
 	persons := h.service.GetPersons()
 	err := json.NewEncoder(w).Encode(&persons)
@@ -58,7 +58,7 @@ func (h *personHandler) GetPersons(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *personHandler) CreatePerson(w http.ResponseWriter, r *http.Request) {
+func (h personHandler) CreatePerson(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Create person: /person")
 
 	message := h.service.CreatePerson(r)
@@ -71,7 +71,7 @@ func (h *personHandler) CreatePerson(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (h *personHandler) UpdatePerson(w http.ResponseWriter, r *http.Request) {
+func (h personHandler) UpdatePerson(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Update person: /person")
 	message := h.service.UpdatePerson(r)
 	err := json.NewEncoder(w).Encode(&message)
@@ -82,12 +82,12 @@ func (h *personHandler) UpdatePerson(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *personHandler) DeletePerson(w http.ResponseWriter, r *http.Request) {
+func (h personHandler) DeletePerson(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Delete persons: /person")
 	h.service.DeleteAllPersons()
 }
 
-func (h *personHandler) DeletePersonByDocument(w http.ResponseWriter, r *http.Request) {
+func (h personHandler) DeletePersonByDocument(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Delete person by document: /person")
 	params := mux.Vars(r)
 	h.service.DeletePersonByDocument(params["document"])

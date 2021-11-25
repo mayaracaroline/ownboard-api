@@ -93,7 +93,7 @@ func TestCreatePerson(t *testing.T) {
 	message := s.CreatePerson(request)
 
 	assert.NoError(t, err)
-	assert.Equal(t, "Pessoa cadastrada com sucesso!", message)
+	assert.Nil(t, message)
 }
 
 func TestCreatePersonError(t *testing.T) {
@@ -111,7 +111,7 @@ func TestCreatePersonError(t *testing.T) {
 	message := s.CreatePerson(request)
 
 	assert.NoError(t, err)
-	assert.Equal(t, "Pessoa já cadastrada!", message)
+	assert.Error(t, message)
 }
 
 func TestCreatePersonRequestError(t *testing.T) {
@@ -123,7 +123,7 @@ func TestCreatePersonRequestError(t *testing.T) {
 	message := s.CreatePerson(request)
 
 	assert.NoError(t, err)
-	assert.Equal(t, "erro ao processar dados, revise os campos inseridos", message)
+	assert.Error(t, message)
 }
 
 func TestUpdatePerson(t *testing.T) {
@@ -142,7 +142,7 @@ func TestUpdatePerson(t *testing.T) {
 	message := s.UpdatePerson(request)
 
 	assert.NoError(t, err)
-	assert.Equal(t, "Dados atualizados com sucesso", message)
+	assert.Nil(t, message)
 }
 
 func TestUpdatePerson_Data(t *testing.T) {
@@ -186,7 +186,7 @@ func TestUpdatePersonError(t *testing.T) {
 	message := s.UpdatePerson(request)
 
 	assert.NoError(t, err)
-	assert.Equal(t, "Pessoa não encontrada para atualização", message)
+	assert.Error(t, message)
 }
 
 func TestUpdatePersonRequestError(t *testing.T) {
@@ -197,7 +197,7 @@ func TestUpdatePersonRequestError(t *testing.T) {
 	message := s.UpdatePerson(request)
 
 	assert.NoError(t, err)
-	assert.Equal(t, "erro ao processar dados, revise os campos inseridos", message)
+	assert.Error(t, message)
 
 }
 

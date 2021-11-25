@@ -18,57 +18,57 @@ func NewPersonService(r repositories.Repository) Service {
 		repository: r,
 	}
 }
-func (s *personService) GetPersons() []model.Person {
+func (s personService) GetPersons() []model.Person {
 	return s.repository.FindAll()
 }
 
-func (s *personService) GetPersonByDocument(document string) (model.Person, string) {
+func (s personService) GetPersonByDocument(document string) (model.Person, error) {
 
 	person, findErr := s.repository.FindByDocument(document)
 	if findErr != nil {
-		return person, findErr.Error()
+		return person, findErr
 	}
 
-	return person, ""
+	return person, nil
 }
 
-func (s *personService) CreatePerson(r *http.Request) string {
+func (s personService) CreatePerson(r *http.Request) error {
 	person, err := toPerson(r)
 
 	if err != nil {
-		return err.Error()
+		return err
 	}
 
 	_, findErr := s.repository.FindByDocument(person.Document)
 
 	if findErr == nil {
-		return "Pessoa já cadastrada!"
+		return errors.New("pessoa já cadastrada")
 	}
 
 	s.repository.Save(person)
 
-	return "Pessoa cadastrada com sucesso!"
+	return nil
 }
 
-func (s *personService) UpdatePerson(r *http.Request) string {
+func (s personService) UpdatePerson(r *http.Request) error {
 	person, err := toPerson(r)
 	if err != nil {
-		return err.Error()
+		return errors.New(err.Error())
 	}
 	updateError := s.repository.Update(person)
 
 	if updateError != nil {
-		return updateError.Error()
+		return updateError
 	}
 
-	return "Dados atualizados com sucesso"
+	return nil
 }
 
-func (s *personService) DeletePersonByDocument(document string) {
+func (s personService) DeletePersonByDocument(document string) {
 	s.repository.DeleteByDocument(document)
 }
 
-func (s *personService) DeleteAllPersons() {
+func (s personService) DeleteAllPersons() {
 	s.repository.DeleteAll()
 }
 
