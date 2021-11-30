@@ -9,8 +9,9 @@ type PersonRepositoryMock struct {
 	mock.Mock
 }
 
-func (r *PersonRepositoryMock) Save(person model.Person) {
-	r.Called(person)
+func (r *PersonRepositoryMock) Save(person model.Person) error {
+	args := r.Called(person)
+	return args.Error(0)
 }
 
 func (r *PersonRepositoryMock) Update(person model.Person) error {

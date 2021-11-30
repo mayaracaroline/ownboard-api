@@ -27,6 +27,8 @@ func (s personService) GetPersonByDocument(document string) (model.Person, error
 	person, findErr := s.repository.FindByDocument(document)
 	if findErr != nil {
 		return person, findErr
+	} else if person.Document == "" {
+		return person, errors.New("pessoa não encontrada para este documento")
 	}
 
 	return person, nil
@@ -39,15 +41,16 @@ func (s personService) CreatePerson(r *http.Request) error {
 		return err
 	}
 
-	_, findErr := s.repository.FindByDocument(person.Document)
+	p, findErr := s.repository.FindByDocument(person.Document)
 
-	if findErr == nil {
-		return errors.New("pessoa já cadastrada")
+	if findErr != nil {
+		return errors.New("erro ao criar pessoa " + findErr.Error())
+	} else if p.Document != "" {
+		return errors.New("pessoa já cadastrada para este documento")
 	}
 
-	s.repository.Save(person)
+	return s.repository.Save(person)
 
-	return nil
 }
 
 func (s personService) UpdatePerson(r *http.Request) error {
@@ -55,13 +58,9 @@ func (s personService) UpdatePerson(r *http.Request) error {
 	if err != nil {
 		return errors.New(err.Error())
 	}
-	updateError := s.repository.Update(person)
 
-	if updateError != nil {
-		return updateError
-	}
+	return s.repository.Update(person)
 
-	return nil
 }
 
 func (s personService) DeletePersonByDocument(document string) {

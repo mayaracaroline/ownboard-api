@@ -18,7 +18,7 @@ func TestGetPersonByDocumentError(t *testing.T) {
 
 	s := service.PersonServiceMock{}
 	handler := handler.NewPersonHandle(&s)
-	s.On("GetPersonByDocument", mock.AnythingOfType("string")).Return(model.Person{}, errors.New(""))
+	s.On("GetPersonByDocument", mock.AnythingOfType("string")).Return(model.Person{}, errors.New("Error"))
 
 	r := mux.NewRouter()
 	r.HandleFunc("/person/{document}", handler.GetPersonByDocument)
@@ -28,7 +28,7 @@ func TestGetPersonByDocumentError(t *testing.T) {
 		Handler(r).
 		Get("/person/01234567890").
 		Expect(t).
-		Status(http.StatusOK).
+		Status(http.StatusInternalServerError).
 		End()
 }
 
@@ -82,7 +82,7 @@ func TestCreatePerson(t *testing.T) {
 		Handler(r).
 		Post("/person").
 		Expect(t).
-		Status(http.StatusOK).
+		Status(http.StatusCreated).
 		End()
 }
 

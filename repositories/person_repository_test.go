@@ -23,14 +23,14 @@ func TestFindPersonByDocument(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestFindPersonByDocumentError(t *testing.T) {
+func TestFindPersonByDocumentNotFound(t *testing.T) {
 	p := *model.NewPerson("Mayara", "Santos", time.Date(1994, 04, 20, 18, 0, 0, 0, time.UTC), "44221617845", "Fisica")
 
 	person, err := repo.FindByDocument("44221617840")
 
 	assert.NotEqual(t, p, person)
 	assert.Empty(t, person)
-	assert.Error(t, err)
+	assert.Nil(t, err)
 }
 
 func TestFindPersonAll(t *testing.T) {
@@ -71,9 +71,9 @@ func TestUpdatError(t *testing.T) {
 }
 func TestDeletePerson(t *testing.T) {
 	repo.DeleteByDocument("76858631038")
-	person, err := repo.FindByDocument("76858631038")
+	person, _ := repo.FindByDocument("76858631038")
 	assert.Empty(t, person)
-	assert.Error(t, err)
+	assert.Equal(t, "", person.Document)
 }
 
 func TestDeleteAll(t *testing.T) {

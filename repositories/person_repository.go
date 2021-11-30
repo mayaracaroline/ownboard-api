@@ -10,6 +10,8 @@ type personRepository struct {
 	db map[string]model.Person
 }
 
+const ErrNotFound = "pessoa não encontrada"
+
 func NewPersonRepository() Repository {
 	p := make(map[string]model.Person)
 	return &personRepository{
@@ -17,8 +19,9 @@ func NewPersonRepository() Repository {
 	}
 }
 
-func (r *personRepository) Save(p model.Person) {
+func (r *personRepository) Save(p model.Person) error {
 	r.db[p.Document] = p
+	return nil
 }
 
 func (r *personRepository) FindAll() []model.Person {
@@ -32,9 +35,8 @@ func (r *personRepository) FindAll() []model.Person {
 
 func (r *personRepository) Update(p model.Person) error {
 	existsPerson := r.checkForExistingPerson(p.Document)
-
 	if !existsPerson {
-		return errors.New("Pessoa não encontrada para atualização")
+		return errors.New(ErrNotFound)
 	}
 
 	r.db[p.Document] = p
@@ -43,12 +45,8 @@ func (r *personRepository) Update(p model.Person) error {
 }
 
 func (r *personRepository) FindByDocument(document string) (model.Person, error) {
+	person := r.db[document]
 
-	person, ok := r.db[document]
-
-	if !ok {
-		return model.Person{}, errors.New("Pessoa não encontrada para o documento: " + document)
-	}
 	return person, nil
 }
 

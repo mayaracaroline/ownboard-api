@@ -69,6 +69,24 @@ func TestGetPersonByDocumentError(t *testing.T) {
 		"Fisica",
 	)
 
+	repositoryMock.On("FindByDocument", mock.AnythingOfType("string")).Return(model.Person{}, nil)
+	person, message := s.GetPersonByDocument(_unregisteredDocument)
+	assert.Empty(t, person)
+	assert.NotEmpty(t, message)
+
+}
+
+func TestGetPersonByDocumentNotFound(t *testing.T) {
+	repositoryMock := repositories.PersonRepositoryMock{}
+	s := service.NewPersonService(&repositoryMock)
+	person := *model.NewPerson(
+		"Mayara",
+		"Santos",
+		time.Date(1994, 04, 20, 18, 0, 0, 0, time.UTC),
+		_registeredDocument,
+		"Fisica",
+	)
+
 	repositoryMock.On("FindByDocument", mock.AnythingOfType("string")).Return(model.Person{}, errors.New("Error"))
 	person, message := s.GetPersonByDocument(_unregisteredDocument)
 	assert.Empty(t, person)
@@ -86,8 +104,8 @@ func TestCreatePerson(t *testing.T) {
 		"44321517843",
 		"Fisica",
 	)
-	repositoryMock.On("FindByDocument", mock.AnythingOfType("string")).Return(model.Person{}, errors.New("Error"))
-	repositoryMock.On("Save", mock.AnythingOfType("model.Person"))
+	repositoryMock.On("FindByDocument", mock.AnythingOfType("string")).Return(model.Person{}, nil)
+	repositoryMock.On("Save", mock.AnythingOfType("model.Person")).Return(nil)
 
 	request, err := createRequest(person)
 	message := s.CreatePerson(request)
@@ -183,10 +201,10 @@ func TestUpdatePersonError(t *testing.T) {
 	repositoryMock.On("FindByDocument", mock.AnythingOfType("string")).Return(model.Person{}, "Error")
 	repositoryMock.On("Update", mock.AnythingOfType("model.Person")).Return(errors.New("Pessoa não encontrada para atualização"))
 	request, err := createRequest(person)
-	message := s.UpdatePerson(request)
+	updateErr := s.UpdatePerson(request)
 
 	assert.NoError(t, err)
-	assert.Error(t, message)
+	assert.Error(t, updateErr)
 }
 
 func TestUpdatePersonRequestError(t *testing.T) {
@@ -194,10 +212,10 @@ func TestUpdatePersonRequestError(t *testing.T) {
 	s := service.NewPersonService(&repositoryMock)
 
 	request, err := createRequestError()
-	message := s.UpdatePerson(request)
+	updateErr := s.UpdatePerson(request)
 
 	assert.NoError(t, err)
-	assert.Error(t, message)
+	assert.Error(t, updateErr)
 
 }
 
