@@ -1,0 +1,23 @@
+module github.com/mercadolibre/api
+
+go 1.17
+
+require (
+	github.com/gorilla/mux v1.8.0
+	github.com/stretchr/testify v1.7.0
+)
+
+require (
+	github.com/PaesslerAG/gval v1.0.0 // indirect
+	github.com/PaesslerAG/jsonpath v0.1.1 // indirect
+)
+
+require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/steinfletcher/apitest v1.5.11
+	github.com/steinfletcher/apitest-jsonpath v1.7.1
+	github.com/stretchr/objx v0.1.0 // indirect
+	gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
+)
